@@ -1,79 +1,249 @@
 ﻿#include <Arduino.h>
 
-
 #include "Headder.h"
 
-unsigned long DELAY_TIME = 2000; // 1 sec
-unsigned long DELAY_LED = 10000;
-unsigned long delayStart = 0; // the time the delay started
-unsigned long delayLed = 0;
-bool delayRunning = false; // true if still waiting for delay to finish
+// Create instances.
+#pragma region Instances
+Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
+MFRC522 mfrc522(SS_PIN, RST_PIN);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+DHT dht(DHTPIN, DHTTYPE);
+LiquidCrystal lcd = LiquidCrystal(22, 23, 24, 25, 26, 27);
+#pragma endregion Instances
 
-bool switchLED = false;
-
-Servo myservo;
-MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance.
 void setup()
 {
 	Serial.begin(9600);		// Initiate a serial communication
+	display.begin(SSD1306_SWITCHCAPVCC, 0x3C); // Initiate a OLED display
 	SPI.begin();			// Initiate  SPI bus
 	mfrc522.PCD_Init();		// Initiate MFRC522
-	Timer1.initialize(5000000);  // Initiate Timer1
-	Timer1.attachInterrupt(DoorLight);
+	dht.begin();			// Initiate DHT11 Sensor
+	lcd.begin(16, 2);		// Initiate LCD Display
 	
-	//Pin setup
-	myservo.attach(10);
-	pinMode(RED, OUTPUT);
-	pinMode(Green, OUTPUT);
+	//Pin setup------------------------------
+	servoDoor.attach(10); //Door Servo
+	servoWindow.attach(6); //Window Servo
+
+	pinMode(RED_Door, OUTPUT);
+	pinMode(Green_Door, OUTPUT);
+	
+	pinMode(9, OUTPUT);
+	pinMode(2, INPUT);
+	
+	pinMode(42, INPUT);
+	pinMode(43, INPUT);
+	pinMode(44, INPUT);
+	pinMode(45, INPUT);
+	pinMode(46, INPUT);
+	pinMode(47, INPUT);
+	pinMode(48, INPUT);
+	pinMode(49, INPUT);
+	
+	pinMode(trigPin, OUTPUT);
+	pinMode(echoPin, INPUT);
+	//---------------------------------------
+	
+	//Cooler--------------------
+	pinMode(CoolerPin, OUTPUT);
+	//--------------------------
+	
+	//Heater--------------------
+	pinMode(HeaterPin, OUTPUT);
+	//--------------------------
+	
+	//Window--------------------
+	pinMode(WindowPin, OUTPUT);
+	//--------------------------
 }
 
 void loop()
 {
+	
 	FrontDoor();
 	DoorLight();
+	TemperaturControl();
+	//MeasureDistance();
 }
 
+#pragma region Door
 void DoorLight()
 {
 	if (millis() - delayLed >= DELAY_LED)
 	{
 		
 		delayLed = millis();
+		if (switchLED)
+		{
+			tone(9, 1000, 250);
+		}
 		switchLED = false;
-		myservo.write(90);
+		
+		servoDoor.write(95);
 	}
-	digitalWrite(RED, !switchLED);
-	digitalWrite(Green, switchLED);
+	digitalWrite(RED_Door, !switchLED);
+	digitalWrite(Green_Door, switchLED);
 }
-
 void FrontDoor()
 {
-	if (millis() - delayStart >= DELAY_TIME)
+	delayStart = millis();
+	if (! mfrc522.PICC_IsNewCardPresent())
 	{
-		delayStart = millis();
-		if ( ! mfrc522.PICC_IsNewCardPresent())
+		return;
+	}
+	if (mfrc522.PICC_ReadCardSerial() || ! mfrc522.PICC_IsNewCardPresent())
+	{
+		String content= "";
+		byte letter;
+		for (byte i = 0; i < mfrc522.uid.size; i++)
 		{
-			
-			return;
+			content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+			content.concat(String(mfrc522.uid.uidByte[i], HEX));
 		}
-		if (mfrc522.PICC_ReadCardSerial())
+		content.toUpperCase();
+		
+		if (content.substring(1) == "E2 B6 DF 1B")//Authorized access
 		{
-			Serial.println("Read card!");
-			String content= "";
-			byte letter;
-			for (byte i = 0; i < mfrc522.uid.size; i++)
-			{
-				content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
-				content.concat(String(mfrc522.uid.uidByte[i], HEX));
-			}
-			content.toUpperCase();
+			tone(9, 3000, 250);
+			delay(400);
+			tone(9, 3500, 250);
+			switchLED = true;
+			servoDoor.write(0);
+		}
+		else//Unauthorized access
+		{
+			tone(9, 1000, 250);
 			
-			if (content.substring(1) == "E2 B6 DF 1B")
-			{
-				//Authorized access
-				switchLED = true;
-				myservo.write(0);
-			}
 		}
 	}
 }
+#pragma endregion Door
+
+#pragma region Temp
+void TemperaturControl()
+{
+	ShowDisplay();
+	
+	if (dht.readTemperature() >= (targetTemp + 0.2))
+	{
+		analogWrite(CoolerPin, 255);
+		digitalWrite(HeaterPin, LOW);
+		servoWindow.write(100);
+	}
+	else if (dht.readTemperature() >= targetTemp && dht.readHumidity() >= targetHumidity)
+	{
+		servoWindow.write(180);
+	}
+	else if (dht.readTemperature() <= (targetTemp - 0.2))
+	{
+		analogWrite(CoolerPin, 0);
+		digitalWrite(HeaterPin, HIGH);
+		servoWindow.write(180);
+	}
+	
+	if (dht.readHumidity() >= targetHumidity)
+	{
+		servoWindow.write(40);
+	}
+	
+	
+	
+	char customKey = customKeypad.getKey();
+	if (customKey)
+	{
+		
+		if (customKey == 'D')
+		{
+			keyValue = "";
+		}
+		else if (customKey == 'A')
+		{
+			newValue = keyValue.toFloat();
+			targetTemp = newValue;
+			keyValue = "";
+			analogWrite(6, 255);
+		}
+		else if (customKey == 'B')
+		{
+			newValue = keyValue.toFloat();
+			targetHumidity = newValue;
+			keyValue = "";
+			analogWrite(6, 0);
+		}
+		else if (customKey == 'C')
+		{
+			keyValue = keyValue.substring(0, keyValue.length()-1);
+		}
+		else
+		{
+			if (customKey == '*')
+			{
+				keyValue += '.';
+			}
+			else
+			{
+				keyValue += customKey;
+			}
+			
+		}
+	}
+}
+void ShowDisplay()
+{
+	//OLED-----------------------------------------------
+	display.clearDisplay();
+
+	display.setTextSize(1); // Normal 1:1 pixel scale
+	display.setTextColor(WHITE); // Draw white text
+	display.setCursor(0,0); // Start at top-left corner
+	
+	display.println("Smart house Temp sys");
+	display.println("---------------------");
+	display.print("Target temp:");
+	display.print(targetTemp);
+	display.println(" C");
+	display.print("Current temp:");
+	display.print(float(dht.readTemperature()),1);
+	display.println(" C");
+	display.println("---------------------");
+	display.print("Target humidity:");
+	display.print(targetHumidity);
+	display.println("%");
+	display.print("Current humidity:");
+	display.print(float(dht.readHumidity()),0);
+	display.println("%");
+	display.print("---------------------");
+	display.display();
+	//------------------------------------------------
+	
+	//LCD---------------------------------------------
+	lcd.clear();
+	lcd.setCursor(0, 0);
+	lcd.print(keyValue);
+	lcd.setCursor(12, 0);
+	lcd.print("Set:");
+	lcd.setCursor(0, 1);
+	lcd.println("A =temp B =humid");
+	//------------------------------------------------
+}
+#pragma endregion Temp
+
+#pragma region Ultrasonic Sensor Module
+//void MeasureDistance()
+//{
+	//// Clears the trigPin condition
+	//digitalWrite(trigPin, LOW);
+	//delayMicroseconds(2);
+	//// Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+	//digitalWrite(trigPin, HIGH);
+	//delayMicroseconds(10);
+	//digitalWrite(trigPin, LOW);
+	//// Reads the echoPin, returns the sound wave travel time in microseconds
+	//duration = pulseIn(echoPin, HIGH);
+	//// Calculating the distance
+	//distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+	//// Displays the distance on the Serial Monitor
+	//Serial.print("Distance: ");
+	//Serial.print(distance);
+	//Serial.println(" cm");
+//}
+#pragma endregion Ultrasonic Sensor Module
