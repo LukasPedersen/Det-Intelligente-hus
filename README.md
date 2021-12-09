@@ -40,7 +40,7 @@ Formålet med dette projekt er at jeg skal opnå erfaring med Internet of Things
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+Software og Hardware der er blevet brugt til projekteret
 
 * [Arduino](https://www.arduino.cc/)
 * [Microchip Studio](https://www.microchip.com/en-us/development-tools-tools-and-software/microchip-studio-for-avr-and-sam-devices)
@@ -94,25 +94,6 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-
-1. Fork the Project
-2. Create your Feature Branch fx: (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes fx: (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch fx: (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
 <!-- LICENSE -->
 ## License
 
@@ -136,7 +117,7 @@ Email: [luka0591@elevcampus.dk](luka0591@elevcampus.dk)
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
+
 
 * [Open Source License](https://www.arduino.cc/en/terms-conditions)
 * [Individual Contributor License Agreement, v1.0](https://www.arduino.cc/en/Main/ContributorLicenseAgreement)
@@ -148,7 +129,7 @@ Use this space to list resources you find helpful and would like to give credit 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
+Nyttige links til dokumentation og hjælpemidler:
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
