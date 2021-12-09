@@ -127,11 +127,13 @@ Email: [luka0591@elevcampus.dk](luka0591@elevcampus.dk)
 * [GitHub Pages](https://pages.github.com)
 * [Font Awesome](https://fontawesome.com)
 
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-Nyttige links til dokumentation og hjælpemidler:
+
 
 <!-- MARKDOWN LINKS & IMAGES -->
+Nyttige links til dokumentation og hjælpemidler  
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
 [contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
