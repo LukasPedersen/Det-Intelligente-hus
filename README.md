@@ -32,7 +32,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Formålet med dette projekt er at jeg skal opnå erfaring med Internet of Things (IoT) og nogle af de sensorer/kommunikationsenheder der anvendes i dette felt. jeg har lært at skrive software til at styre/aflæse enhederne, men også opnå kendskab til hvordan man konfigurerer dem elektrisk. Fejlfinding, både soft- og hardware har indgået overalt.
+Formålet med dette projekt er at jeg skal opnå erfaring med Internet of Things (IoT) og nogle af de sensorer/kommunikationsenheder der anvendes i dette felt. jeg har lært at skrive software til at styre/aflæse enhederne, men også opnå kendskab til hvordan man konfigurerer dem elektrisk. Fejlfinding, både soft- og hardware.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
