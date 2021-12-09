@@ -52,8 +52,18 @@ This section should list any major frameworks/libraries used to bootstrap your p
 
 | Name | Version |
 | --- | --- |
-| git status | List all new or modified files |
-| git diff | Show file differences that haven't been staged |
+| Adafruit_BusIO | 1.9.8v |
+| Adafruit_GFX_Library | 1.10.12v |
+| Adafruit_SSD1306 | 2.5.0v |
+| Adafruit_Unified_Sensor | 1.1.4v |
+| DHT_sensor_library | 1.4.3v |
+| Keypad | 3.1.1v |
+| LiquidCrystal | 1.0.6v |
+| MFRC522 | 1.4.10 |
+| Servo | 1.1.8v |
+| SPI | 1.9.8v |
+| TimerOne | 1.1.0v |
+| Wire | 1.8.2v |
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -65,7 +75,7 @@ Download code fra Git/Hub/Lab Læs hvad for nogle Libraries der skal downloades,
 ## Usage
 
 Det Intelligente hus er et semi automatisk program, hvilket vil sige at det vil for det meste passe sig selv.
-Der er muglighed for at justere faver og foretrukne temperatur
+Der er muglighed for at Fx: justere faver og foretrukne temperatur
 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
@@ -78,6 +88,9 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 - [x] Add Changelog
 - [ ] Add back to top links
+- [x] Front door with lock
+- [x] Temperature control
+- [x] Humidity control
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
