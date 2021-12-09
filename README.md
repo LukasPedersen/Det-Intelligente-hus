@@ -87,7 +87,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Roadmap
 
 - [x] Add Changelog
-- [ ] Add back to top links
+- [x] Add back to top links
 - [x] Front door with lock
 - [x] Temperature control
 - [x] Humidity control
