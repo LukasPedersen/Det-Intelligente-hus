@@ -70,7 +70,7 @@ Software og Hardware der er blevet brugt til projekteret
 <!-- GETTING STARTED -->
 ## Getting Started / Prerequisites / Installation
 
-Download code fra Git/Hub/Lab Læs hvad for nogle Libraries der skal downloades, efter downloading kan progammet startes og ledninger kan sættes til. 
+Download code fra Git/Hub/Lab Læs hvad for nogle Libraries der skal downloades, efter downloading kan ledninger kan sættes til og progammet startes. 
 
 ## Usage
 
