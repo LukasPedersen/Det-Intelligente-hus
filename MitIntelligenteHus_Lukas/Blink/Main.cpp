@@ -62,7 +62,7 @@ void loop()
 	FrontDoor();
 	DoorLight();
 	TemperaturControl();
-	//MeasureDistance();
+	MeasureDistance();
 }
 
 #pragma region Door
@@ -74,7 +74,9 @@ void DoorLight()
 		delayLed = millis();
 		if (switchLED)
 		{
-			tone(9, 1000, 250);
+			tone(9, 3500, 250);
+			delay(400);
+			tone(9, 3000, 250);
 		}
 		switchLED = false;
 		
@@ -145,45 +147,40 @@ void TemperaturControl()
 		servoWindow.write(40);
 	}
 	
-	
-	
 	char customKey = customKeypad.getKey();
 	if (customKey)
 	{
-		
-		if (customKey == 'D')
+		switch (customKey)
 		{
-			keyValue = "";
-		}
-		else if (customKey == 'A')
-		{
+			case 'A':
 			newValue = keyValue.toFloat();
 			targetTemp = newValue;
 			keyValue = "";
 			analogWrite(6, 255);
-		}
-		else if (customKey == 'B')
-		{
+			break;
+			
+			case 'B':
 			newValue = keyValue.toFloat();
 			targetHumidity = newValue;
 			keyValue = "";
 			analogWrite(6, 0);
-		}
-		else if (customKey == 'C')
-		{
-			keyValue = keyValue.substring(0, keyValue.length()-1);
-		}
-		else
-		{
-			if (customKey == '*')
-			{
-				keyValue += '.';
-			}
-			else
-			{
-				keyValue += customKey;
-			}
+			break;
 			
+			case 'C':
+			keyValue = keyValue.substring(0, keyValue.length()-1);
+			break;
+			
+			case 'D':
+			keyValue = "";
+			break;
+			
+			case '*':
+			keyValue += '.';
+			break;
+
+			default:
+			keyValue += customKey;
+			break;
 		}
 	}
 }
@@ -199,7 +196,7 @@ void ShowDisplay()
 	display.println("Smart house Temp sys");
 	display.println("---------------------");
 	display.print("Target temp:");
-	display.print(targetTemp);
+	display.print(targetTemp, 1);
 	display.println(" C");
 	display.print("Current temp:");
 	display.print(float(dht.readTemperature()),1);
@@ -228,22 +225,28 @@ void ShowDisplay()
 #pragma endregion Temp
 
 #pragma region Ultrasonic Sensor Module
-//void MeasureDistance()
-//{
-	//// Clears the trigPin condition
-	//digitalWrite(trigPin, LOW);
-	//delayMicroseconds(2);
-	//// Sets the trigPin HIGH (ACTIVE) for 10 microseconds
-	//digitalWrite(trigPin, HIGH);
-	//delayMicroseconds(10);
-	//digitalWrite(trigPin, LOW);
-	//// Reads the echoPin, returns the sound wave travel time in microseconds
-	//duration = pulseIn(echoPin, HIGH);
-	//// Calculating the distance
-	//distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
-	//// Displays the distance on the Serial Monitor
-	//Serial.print("Distance: ");
-	//Serial.print(distance);
-	//Serial.println(" cm");
-//}
+void MeasureDistance()
+{
+	// Clears the trigPin condition
+	digitalWrite(trigPin, LOW);
+	delayMicroseconds(2);
+	// Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+	digitalWrite(trigPin, HIGH);
+	delayMicroseconds(10);
+	digitalWrite(trigPin, LOW);
+	// Reads the echoPin, returns the sound wave travel time in microseconds
+	duration = pulseIn(echoPin, HIGH);
+	// Calculating the distance
+	distance = duration / 58; // Speed of sound wave divided by 2 (go and back)
+
+	if (distance <= 30)
+	{
+		String tempDelay = String(distance);
+		tempDelay += "0";
+		int distanceDelay = tempDelay.toInt();
+		Serial.println(tempDelay);
+		tone(9, 3000, distance);
+		delay(distanceDelay);
+	}
+}
 #pragma endregion Ultrasonic Sensor Module

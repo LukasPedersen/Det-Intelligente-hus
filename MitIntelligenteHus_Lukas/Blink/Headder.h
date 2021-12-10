@@ -57,7 +57,7 @@ void DoorLight();
 #define WindowPin 6
 
 Servo servoWindow;
-long targetTemp = 25;
+float targetTemp = 25.5;
 long targetHumidity = 30;
 String keyValue = "";
 float newValue = 0;
@@ -68,7 +68,7 @@ void ShowDisplay();
 //------------------------------
 
 //Ultrasonic Sensor Module--------------------------------
-#define echoPin 5
+#define echoPin 7
 #define trigPin 4
 
 long duration; // variable for the duration of sound wave travel
